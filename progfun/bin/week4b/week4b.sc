@@ -8,8 +8,7 @@ object week4b {
                                                   //> four  : week4b.Succ = 4
   	
   val six =
-  	new Succ(new Succ(new Succ(new Succ( new Succ( new Succ(Zero) ) ))))
-                                                  //> six  : week4b.Succ = 6
+  	new Succ(new Succ(four))                  //> six  : week4b.Succ = 6
   	
  	def insert(elem: Int, list: List[Int]):List[Int] = list match{
  		case List() => List(elem)
@@ -26,6 +25,9 @@ object week4b {
   
   insert(4,List())                                //> res3: List[Int] = List(4)
   
-  insert(4,List(1,2,3,5,6,7))     
+  insert(4,List(1,2,3,5,6,7))                     //> res4: List[Int] = List(1, 2, 3, 4, 5, 6, 7)
+  
+  List(1,2,3,4,1,2,1,1,5).groupBy {identity}.toList.map{case (element,elements) => (element, elements.size)}
+                                                  //> res5: List[(Int, Int)] = List((5,1), (1,4), (2,2), (3,1), (4,1))
   
 }
