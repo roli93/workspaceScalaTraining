@@ -191,7 +191,7 @@ object Huffman {
    */
     def encode(tree: CodeTree)(text: List[Char]): List[Bit] = text match {
       case x::xs => sequenceFor(tree,x) ++ encode(tree)(xs)
-      case List() => List()
+      case List() => List() 
     }
     
     private def sequenceFor(tree: CodeTree,char: Char): List[Bit] = tree match{
