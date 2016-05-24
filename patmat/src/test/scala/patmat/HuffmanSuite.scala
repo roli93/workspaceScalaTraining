@@ -78,6 +78,13 @@ class HuffmanSuite extends FunSuite {
     }
   }
   
+  test("The code for xxxxtte should decode singleton sequence x successfully as 1") {
+    new TestTrees {
+      val aCode = createCodeTree("xxxxtte".toList)
+      assert(decode(aCode, List(1)) === "x".toList)
+    }
+  }
+  
    test("The code for xxxxtte should encode ext as 00101") {
     new TestTrees {
       val aCode = createCodeTree("xxxxtte".toList)
