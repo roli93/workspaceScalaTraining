@@ -75,11 +75,8 @@ object Huffman {
    *       println("integer is  : "+ theInt)
    *   }
    */
-    def times(chars: List[Char]): List[(Char, Int)] = chars match{
-      case List() => List()
-      case nonEmptyChars => 
-        nonEmptyChars.groupBy(identity).toList.map{case (char, repetitions) => (char, repetitions.size)}
-    }
+    def times(chars: List[Char]): List[(Char, Int)] = 
+      chars.groupBy(identity).toList.map{case (char, repetitions) => (char, repetitions.size)}
 
   /**
    * Returns a list of `Leaf` nodes for a given frequency table `freqs`.
