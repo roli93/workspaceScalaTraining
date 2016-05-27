@@ -62,16 +62,13 @@ object week6ws {
 							new Book("1",List("a1")),
 							new Book("2",List("a2")),
 							new Book("3",List("a3","a1")),
-							new Book("4",List("a4"))
+							new Book("4",List("x4"))
 							)
                                                   //> books  : List[week6.Book] = List([1 by List(a1)], [2 by List(a2)], [3 by Li
-                                                  //| st(a3, a1)], [4 by List(a4)])
+                                                  //| st(a3, a1)], [4 by List(x4)])
 							
 	 books.flatMap{
-	 	b1 => books.filter{
-	 		b2 => b2 != b1
-	 	}
-	 		.flatMap{
+	 	b1 => books.filter{b2 => b2 != b1}.flatMap{
 	 			b2 => b2.authors.flatMap{
 	 				a2 => b1.authors.filter{
 	 					a1 => a1 == a2
@@ -88,6 +85,97 @@ object week6ws {
 	 		a2 <- b2.authors
 	 		if a1 == a2
 	 } yield a1                               //> res7: List[String] = List(a1, a1)
+	
+	for (b <- books; a <- b.authors if a startsWith "x") yield b.name
+                                                  //> res8: List[String] = List(4)
+	
+	books.flatMap(b => for(a <-b.authors if a startsWith "x") yield b.name )
+                                                  //> res9: List[String] = List(4)
+	
+	books.flatMap(b => for(a <-b.authors.withFilter(x => x startsWith "x") ) yield b.name )
+                                                  //> res10: List[String] = List(4)
+                                                  
+	books.flatMap(b => b.authors.withFilter(x => x startsWith "x").map(a => b.name) )
+                                                  //> res11: List[String] = List(4)
+                                                  
+	//Now, knowing how to translate it:
+	
+	for {
+	 		b1 <- books
+	 		b2 <- books
+	 		if b1 != b2
+	 		a1 <- b1.authors
+	 		a2 <- b2.authors
+	 		if a1 == a2
+	 } yield a1                               //> res12: List[String] = List(a1, a1)
+	 
+	 books.flatMap{b1 =>
+		 for {
+		 		b2 <- books
+		 		if b1 != b2
+		 		a1 <- b1.authors
+		 		a2 <- b2.authors
+		 		if a1 == a2
+		 } yield a1
+	 }                                        //> res13: List[String] = List(a1, a1)
+	 
+	 books.flatMap{b1 =>
+		 for {
+		 		b2 <- books.withFilter{b2 => b1 != b2}
+		 		a1 <- b1.authors
+		 		a2 <- b2.authors
+		 		if a1 == a2
+		 } yield a1
+	 }                                        //> res14: List[String] = List(a1, a1)
+	 
+	 books.flatMap{b1 =>
+		 books.withFilter{b2 => b1 != b2}.flatMap{ b2 =>
+			 	for {
+			 		a1 <- b1.authors
+			 		a2 <- b2.authors
+		 			if a1 == a2
+				} yield a1
+		 }
+	 }                                        //> res15: List[String] = List(a1, a1)
+	 
+	books.flatMap{b1 =>
+		 books.withFilter{b2 => b1 != b2}.flatMap{ b2 =>
+			 	b1.authors.flatMap{ a1 =>
+				 	for {
+				 		a2 <- b2.authors
+			 			if a1 == a2
+					} yield a1
+			 	}
+		 }
+	 }                                        //> res16: List[String] = List(a1, a1)
+
+	books.flatMap{b1 =>
+		 books.withFilter{b2 => b1 != b2}.flatMap{ b2 =>
+			 	b1.authors.flatMap{ a1 =>
+				 	for {
+				 		a2 <- b2.authors.withFilter{a2 => a1 == a2}
+					} yield a1
+			 	}
+		 }
+	 }                                        //> res17: List[String] = List(a1, a1)
+
+	books.flatMap{b1 =>
+		 books.withFilter{b2 => b1 != b2}.flatMap{ b2 =>
+			 	b1.authors.flatMap{ a1 =>
+			 		b2.authors.withFilter{a2 => a1 == a2}.map{a2 =>
+			 			a1
+			 		}
+			 	}
+		 }
+	 }                                        //> res18: List[String] = List(a1, a1)
+	 
+	books.flatMap{b1 =>
+		books.filter{b2 => b2 != b1}.flatMap{b2 =>
+	  	b1.authors.flatMap{a1 =>
+	  		b2.authors.filter{a2 => a1 == a2}
+	 			}
+	 		}
+	 	}                                 //> res19: List[String] = List(a1, a1)
 	
 }
 
