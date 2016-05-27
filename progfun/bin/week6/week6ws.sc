@@ -168,7 +168,8 @@ object week6ws {
 			 	}
 		 }
 	 }                                        //> res18: List[String] = List(a1, a1)
-	 
+	
+	//First attempt at translating, rewritten to make comparison easier
 	books.flatMap{b1 =>
 		books.filter{b2 => b2 != b1}.flatMap{b2 =>
 	  	b1.authors.flatMap{a1 =>
@@ -176,6 +177,12 @@ object week6ws {
 	 			}
 	 		}
 	 	}                                 //> res19: List[String] = List(a1, a1)
+	
+	/*The only difference is the last map. As he said "yield a1" instead of "yield a2" -which
+	is the same, given they are equal- he introduces that final map. In my case I did the
+	equivalent to a "yield a2", which would result in a map(a2=>a2) which is equal to
+	map(identity), which in turn returns the original list and is the ame as making no mapping
+	at all, as I did*/
 	
 }
 
